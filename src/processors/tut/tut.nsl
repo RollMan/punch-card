@@ -1,0 +1,39 @@
+#define ADD 0
+#define LD 1
+#define ST 2
+#define JMP 3
+#define JZ 4
+
+module tut {
+  reg count[8] = 0, pc[8], op[8], im[8], acc[8]=0;
+  proc_name ift(pc), imm(op), exe(im);
+
+  any{
+    count <= 20: count++;
+    count == 10: ift(0);
+  }
+
+  proc ift{
+    imm(mread(pc++));
+  }
+
+  proc imm {
+    exe(mread(pc++));
+  }
+
+  proc exe{
+    wire nextpc[8];
+    any{
+      op == ADD: {acc:=acc+im;}
+      op == LD:  {acc:=mread(im);}
+      op == ST: {mwrite(imm, acc);}
+    }
+
+    any{
+      op == JMP: {nextpc=im;}
+      (op == JZ) && (acc == 0) {nextpc=im;}
+      else: nextpc=pc;
+    }
+    ift(nextpc);
+  }
+}
