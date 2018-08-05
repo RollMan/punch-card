@@ -1,0 +1,23 @@
+#include "MD.nsh"
+#include "../common/PWM.nsh"
+
+module MD{
+  PWM pwm;
+  wire ref_abs[10];
+  wire direction;
+
+  any{
+    ref[10] == 0: ref_abs = ref[9:0];
+    ref[10] == 1: ref_abs = ~ref[9:0] + 1;
+  }
+
+  direction = ref[32];
+  vref = pwm.exec(ref_abs);
+  if(ref_abs == 0){
+    in1 = 1;
+    in2 = 1;
+  }else{
+    in1 = if(direction == 0) 0 else 1;
+    in2 = if(direction == 0) 1 else 0;
+  }
+}

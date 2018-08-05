@@ -1,0 +1,10 @@
+module PWM {
+  reg cnt[32] = 0;
+
+  func exec {
+    any{
+      cnt <= th: return 0;
+      cnt  > th: return 1;
+    }
+  }
+}
