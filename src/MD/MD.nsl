@@ -11,7 +11,7 @@ module MD{
     ref[10] == 1: ref_abs = ~ref[9:0] + 1;
   }
 
-  direction = ref[32];
+  direction = ref[10];
   vref = pwm.exec(ref_abs);
   if(ref_abs == 0){
     in1 = 1;

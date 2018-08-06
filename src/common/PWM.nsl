@@ -1,10 +1,13 @@
+#include "PWM.nsh"
+
 module PWM {
-  reg cnt[32] = 0;
+  reg cnt[10] = 0;
 
   func exec {
+    cnt++;
     any{
-      cnt <= th: return 0;
-      cnt  > th: return 1;
+      cnt >= th: return 0;
+      cnt  < th: return 1;
     }
   }
 }
