@@ -1,0 +1,15 @@
+#define POWER (512)
+#include "../MD/MD.nsh"
+
+module Card {
+  MD md;
+  reg ref_reg[11] = 0;
+  md.ref = ref_reg;
+
+  func send_paper {
+    ref_reg := POWER;
+    if(pos_edge()){
+      return instruction;
+    }
+  }
+}
