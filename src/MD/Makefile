@@ -21,7 +21,7 @@ MKPROJ		= $(SRCDIR)/mkproj-$(DESIGN).tcl
 Q2_PATH = /opt/intelFPGA_lite/17.0/quartus/bin
 Q2SH		= $(Q2_PATH)/quartus_sh
 Q2PGM		= $(Q2_PATH)/quartus_pgm
-CABLE		= "USB-Blaster [1-2]"
+CABLE		= "USB-Blaster [1-1]"
 PMODE		= JTAG
 
 SRCS		= $(DESIGN).nsl $(SRCDIR)/../common/PWM.nsl $(SRCDIR)/MD.nsl

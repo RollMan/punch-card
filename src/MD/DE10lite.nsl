@@ -1,0 +1,15 @@
+#include "MD.nsh"
+
+declare DE10lite{
+  input SW[10];
+  output GPIO[36];
+  output LEDR[2];
+}
+
+module DE10lite{
+  MD md;
+
+  md.ref = (11'SW << 1);
+  GPIO = 36'd0 | 36'(md.vref) | (36'md.in1 << 2) | (36'md.in2 << 4);
+  LEDR = {md.in1, md.in2};
+}
