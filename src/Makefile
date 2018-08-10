@@ -91,4 +91,4 @@ clean:
 $(DESIGN).v	: $(DESIGN).nsl
 
 $(SIM_TARGET).vvp : $(VFILES) $(SIM_TARGET).v
-	$(IVERILOG) -o $@ $^
+	$(IVERILOG) -o $@ $(notdir $^)

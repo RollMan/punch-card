@@ -1,5 +1,34 @@
+#include "DE10lite.nsh"
+
 declare sim_DE10lite simulation {}
 
 module sim_DE10lite {
-  _finish();
+  reg ARDUINO_IO[9];
+  wire GPIO[3];
+  wire HEX0[8], HEX1[8];
+  DE10lite de10lite;
+
+  reg cnt[8] = 0;
+  func_self start();
+
+  if(cnt < 10) cnt++;
+  if(cnt == 10) {cnt++; start();}
+
+  ARDUINO_IO := 9'd5;
+  de10lite.ARDUINO_IO_0 = ARDUINO_IO[0];
+  de10lite.ARDUINO_IO_1 = ARDUINO_IO[1];
+  de10lite.ARDUINO_IO_2 = ARDUINO_IO[2];
+  de10lite.ARDUINO_IO_3 = ARDUINO_IO[3];
+  de10lite.ARDUINO_IO_4 = ARDUINO_IO[4];
+  de10lite.ARDUINO_IO_5 = ARDUINO_IO[5];
+  de10lite.ARDUINO_IO_6 = ARDUINO_IO[6];
+  de10lite.ARDUINO_IO_7 = ARDUINO_IO[7];
+  de10lite.ARDUINO_IO_8 = ARDUINO_IO[8];
+
+  _display("%x, %x, %x", GPIO, HEX0, HEX1);
+
+  func start{
+    //reg i[32];
+    _finish("finished");
+  }
 }
