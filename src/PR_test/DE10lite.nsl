@@ -1,0 +1,22 @@
+declare DE10lite {
+  input ARDUINO_IO_0;
+  input ARDUINO_IO_1;
+  input ARDUINO_IO_2;
+  input ARDUINO_IO_3;
+  input ARDUINO_IO_4;
+  input ARDUINO_IO_5;
+  input ARDUINO_IO_6;
+  input ARDUINO_IO_7;
+  input ARDUINO_IO_8;
+  output ARDUINO_IO_15;
+
+  output LEDR[9];
+}
+
+module DE10lite {
+  wire photo_input[9];
+  
+  photo_input = {ARDUINO_IO_8, ARDUINO_IO_7, ARDUINO_IO_6, ARDUINO_IO_5, ARDUINO_IO_4, ARDUINO_IO_3, ARDUINO_IO_2, ARDUINO_IO_1, ARDUINO_IO_0};
+  LEDR = photo_input;
+  ARDUINO_IO_15 = 1;
+}
