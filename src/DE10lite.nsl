@@ -39,8 +39,8 @@ module DE10lite {
   HEX0 = hex0.trans(processor.accumulator[3:0]);
 
   // Debug information
-  //LEDR = 10'(ARDUINO_IO);
-  LEDR = 10'hFFFFF;
+  LEDR = 10'(ARDUINO_IO);
+  // LEDR = 10'hFFFFF;
   HEX3 = hex3.trans(processor.PC[7:4]);
   HEX2 = hex2.trans(processor.PC[3:0]);
 
