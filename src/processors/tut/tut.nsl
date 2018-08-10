@@ -10,6 +10,8 @@ module tut {
   reg count[8] = 0, pc[8], op[8], im[8], acc[8]=0;
   proc_name ift(pc), ift_wait(), imm(op), imm_wait(), exe(im);
 
+  accumulator = acc;
+
   any{
     count <= 20: count++;
     count == 10: ift(0);
@@ -46,7 +48,7 @@ module tut {
     any{
       op == ADD: {acc:=acc+im;}
       op == LD:  {acc:=dmem_read(im);}
-      op == ST: {dmem_write(imm, acc);}
+      op == ST: {dmem_write(im, acc);}
     }
 
     any{

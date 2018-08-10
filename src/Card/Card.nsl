@@ -1,4 +1,4 @@
-#define POWER (512)
+#define POWER (800)
 #include "Card.nsh"
 
 module Card {
@@ -26,13 +26,20 @@ module Card {
   func sign_pos_edge {
     wire sign;
     reg prev_sign = 1;
+    reg chattering[32] = 0;
 
     sign = sensors[8];
     prev_sign := sign;
 
     if(prev_sign == 1 && sign == 0) {
-      return 1;
+      if(sign == 1) return 0;
+      else chattering++;
+      if((sign == 0) && (chattering >= 5000000)){
+          chattering := 0;
+        return 1;
+      }
     }else{
+      chattering := 0;
       return 0;
     }
   }

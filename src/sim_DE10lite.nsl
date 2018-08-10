@@ -3,7 +3,7 @@
 declare sim_DE10lite simulation {}
 
 module sim_DE10lite {
-  reg ARDUINO_IO[9];
+  reg ARDUINO_IO[9] = 9'hFFFF;
   wire GPIO[3];
   wire HEX0[8], HEX1[8];
   DE10lite de10lite;
@@ -14,7 +14,6 @@ module sim_DE10lite {
   if(cnt < 10) cnt++;
   if(cnt == 10) {cnt++; start();}
 
-  ARDUINO_IO := 9'd5;
   de10lite.ARDUINO_IO_0 = ARDUINO_IO[0];
   de10lite.ARDUINO_IO_1 = ARDUINO_IO[1];
   de10lite.ARDUINO_IO_2 = ARDUINO_IO[2];
@@ -25,10 +24,74 @@ module sim_DE10lite {
   de10lite.ARDUINO_IO_7 = ARDUINO_IO[7];
   de10lite.ARDUINO_IO_8 = ARDUINO_IO[8];
 
-  _display("%x, %x, %x", GPIO, HEX0, HEX1);
+  HEX0 = de10lite.HEX0;
+  HEX1 = de10lite.HEX1;
+  GPIO = {de10lite.GPIO0, de10lite.GPIO1, de10lite.GPIO2};
 
-  func start{
-    //reg i[32];
+  _display("vref = %x, (in1, in2) = (%x, %x), %x, %x", GPIO[0], GPIO[1], GPIO[2], HEX0, HEX1);
+
+  func start seq{
+    reg i[32];
+    reg nop;
+
+    // INITIAL STATE (ALL WHITE)
+    ARDUINO_IO := 9'hFFFFFF;
+
+    for(i:=0; i < 3000; i++){
+      nop := 0;
+    }
+
+    // ADD
+    ARDUINO_IO := 9'b100000000;
+
+    for(i:=0; i < 10; i++){
+      nop := 0;
+    }
+
+    ARDUINO_IO := 9'b000000000;
+
+    for(i:=0; i < 10; i++){
+      nop := 0;
+    }
+
+    ARDUINO_IO := 9'b100000000;
+
+    for(i:=0; i < 10; i++){
+      nop := 0;
+    }
+
+    // INTERVAL (ALL WHITE)
+    ARDUINO_IO := 9'b111111111;
+
+    for(i:=0; i < 10; i++){
+      nop := 0;
+    }
+
+    // IMM of ADD
+    ARDUINO_IO := 9'b100001000;
+
+    for(i:=0; i < 10; i++){
+      nop := 0;
+    }
+
+    ARDUINO_IO := 9'b000001000;
+
+    for(i:=0; i < 10; i++){
+      nop := 0;
+    }
+
+    ARDUINO_IO := 9'b100001000;
+
+    for(i:=0; i < 10; i++){
+      nop := 0;
+    }
+
+    // INTERVAL (ALL WHITE)
+    ARDUINO_IO := 9'b111111111;
+
+    for(i:=0; i < 10; i++){
+      nop := 0;
+    }
     _finish("finished");
   }
 }

@@ -20,11 +20,12 @@ NSLFLAGS  	= -O -neg_res -I$(SRCDIR) -I$(SRCDIR)/common -I$(SRCDIR)/MD -I$(SRCDI
 MKPROJ		= $(SRCDIR)/mkproj-$(DESIGN).tcl
 
 IVERILOG	= iverilog
+VVP			= vvp
 
 Q2_PATH = /opt/intelFPGA_lite/17.0/quartus/bin
 Q2SH		= $(Q2_PATH)/quartus_sh
 Q2PGM		= $(Q2_PATH)/quartus_pgm
-CABLE		= "USB-Blaster [1-1]"
+CABLE		= "USB-Blaster [1-2]"
 PMODE		= JTAG
 
 SRCS		= $(DESIGN).nsl ./common/PWM.nsl ./MD/MD.nsl ./processors/tut/tut.nsl ./HEX/HEX.nsl Card/Card.nsl
@@ -47,7 +48,7 @@ sim:
 		echo mkdir $(WORKDIR); \
 		mkdir $(WORKDIR); \
 	fi
-	( cd $(WORKDIR); make -f ../Makefile SRCDIR=.. $(SIM_TARGET).vvp )
+	( cd $(WORKDIR); make -f ../Makefile SRCDIR=.. simulation )
 
 ########
 
@@ -89,6 +90,9 @@ clean:
 ########
 
 $(DESIGN).v	: $(DESIGN).nsl
+
+simulation: $(SIM_TARGET).vvp
+	vvp $(notdir $^)
 
 $(SIM_TARGET).vvp : $(VFILES) $(SIM_TARGET).v
 	$(IVERILOG) -o $@ $(notdir $^)

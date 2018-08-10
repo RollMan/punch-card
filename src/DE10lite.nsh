@@ -8,4 +8,7 @@ declare DE10lite {
 
   // accumulator output
   output HEX0[8], HEX1[8];
+
+  // photo-reflector debugging
+  output LEDR[10];
 }

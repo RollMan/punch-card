@@ -12,6 +12,17 @@ module DE10lite {
   mem dmem[256][8];
 
 
+  LEDR = {ARDUINO_IO_8,
+                  ARDUINO_IO_7,
+                  ARDUINO_IO_6,
+                  ARDUINO_IO_5,
+                  ARDUINO_IO_4,
+                  ARDUINO_IO_3,
+                  ARDUINO_IO_2,
+                  ARDUINO_IO_1,
+                  ARDUINO_IO_0};
+
+
   // motor driver
   md.ref = card.ref;
   GPIO0 = md.vref;
@@ -28,7 +39,9 @@ module DE10lite {
                   ARDUINO_IO_1,
                   ARDUINO_IO_0};
 
-  .{HEX1, HEX0} = {hex1.trans(processor.accumulator[7:4]), hex0.trans(processor.accumulator[3:0])};
+  // .{HEX1, HEX0} = {hex1.trans(processor.accumulator[7:4]), hex0.trans(processor.accumulator[3:0])};
+  HEX1 = hex1.trans(processor.accumulator[7:4]);
+  HEX0 = hex0.trans(processor.accumulator[3:0]);
 
   func processor.dmem_read {
     return dmem[processor.address];
