@@ -14,9 +14,12 @@ endif
 VPATH		= $(SRCDIR)
 WORKDIR		= synth
 DESIGN		= DE10lite
+SIM_TARGET	= sim_DE10lite
 NSL2VL    	= nsl2vl
-NSLFLAGS  	= -O -neg_res -I$(SRCDIR) -I$(SRCDIR)/../common/
+NSLFLAGS  	= -O -neg_res -I$(SRCDIR) -I$(SRCDIR)/common -I$(SRCDIR)/MD -I$(SRCDIR)/processors/tut -I$(SRCDIR)/HEX -I$(SRCDIR)/Card
 MKPROJ		= $(SRCDIR)/mkproj-$(DESIGN).tcl
+
+IVERILOG	= iverilog
 
 Q2_PATH = /opt/intelFPGA_lite/17.0/quartus/bin
 Q2SH		= $(Q2_PATH)/quartus_sh
@@ -24,7 +27,7 @@ Q2PGM		= $(Q2_PATH)/quartus_pgm
 CABLE		= "USB-Blaster [1-1]"
 PMODE		= JTAG
 
-SRCS		= $(DESIGN).nsl
+SRCS		= $(DESIGN).nsl ./common/PWM.nsl ./MD/MD.nsl ./processors/tut/tut.nsl ./HEX/HEX.nsl Card/Card.nsl
 #SRCS		= $(DESIGN).nsl
 VFILES 		= $(SRCS:%.nsl=%.v)
 LIBS		=
@@ -39,12 +42,25 @@ all:
 	fi
 	( cd $(WORKDIR); make -f ../Makefile SRCDIR=.. compile )
 
+sim:
+	@if [ ! -d $(WORKDIR) ]; then \
+		echo mkdir $(WORKDIR); \
+		mkdir $(WORKDIR); \
+	fi
+	( cd $(WORKDIR); make -f ../Makefile SRCDIR=.. $(SIM_TARGET).vvp )
+
 ########
 
 .SUFFIXES: .v .nsl
 
+$(SIM_TARGET).v: $(SIM_TARGET).nsl
+	$(NSL2VL) $(NSLFLAGS) -verisim2 $< -target $(SIM_TARGET) -o $(notdir $@)
+
 .nsl.v:
 	$(NSL2VL) $(NSLFLAGS) $< -o $(notdir $@)
+	if [ ! -s $(notdir $@) ]; then\
+		exit 1;\
+	fi
 
 $(DESIGN).qsf: $(VFILES) $(LIBS)
 	$(Q2SH) -t $(MKPROJ) -project $(DESIGN) $^
@@ -74,3 +90,5 @@ clean:
 
 $(DESIGN).v	: $(DESIGN).nsl
 
+$(SIM_TARGET).vvp : $(VFILES) $(SIM_TARGET).v
+	$(IVERILOG) -o $@ $^

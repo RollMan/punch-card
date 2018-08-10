@@ -12,7 +12,7 @@ declare DE10lite {
   output GPIO0, GPIO1, GPIO2;
 
   // accumulator output
-  output HEX0[8], HEX1[8], HEX2[8], HEX3[8];
+  output HEX0[8], HEX1[8];
 }
 
 module DE10lite {
@@ -20,6 +20,7 @@ module DE10lite {
   Card card;
   tut processor;
   HEX hex1, hex0;
+  mem dmem[256][8];
 
 
   // motor driver
@@ -40,11 +41,20 @@ module DE10lite {
 
   .{HEX1, HEX0} = {hex1.trans(processor.accumulator[7:4]), hex0.trans(processor.accumulator[3:0])};
 
-  func processor.mread {
+  func processor.dmem_read {
+    return dmem[processor.address];
+  }
+
+  func processor.dmem_write {
+    dmem[processor.address] := processor.instruction;
+  }
+
+  func processor.imem_read {
     card.send_paper();
   }
 
   func card.on_instruction {
-    tut.done_mread(card.instruction);
+    processor.done_imem_read(card.instruction);
   }
+
 }

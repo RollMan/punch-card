@@ -3,7 +3,6 @@
 
 module Card {
   reg ref_reg[11] = 0;
-  reg instruction_r[8];
   wire is_true;
   func_self sign_pos_edge() : is_true;
   proc_name send_paper_proc();

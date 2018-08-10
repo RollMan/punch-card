@@ -1,0 +1,5 @@
+declare sim_DE10lite simulation {}
+
+module sim_DE10lite {
+  _finish();
+}

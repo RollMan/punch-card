@@ -1,3 +1,5 @@
+#include "tut.nsh"
+
 #define ADD 0
 #define LD 1
 #define ST 2
@@ -15,12 +17,12 @@ module tut {
 
   proc ift{
     // imm(mread(pc++));
-    mread();
+    imem_read();
     ift_wait();
   }
 
   proc ift_wait{
-    if(done_mread){
+    if(done_imem_read){
       imm(instruction);
       pc++;
     }
@@ -28,12 +30,12 @@ module tut {
 
   proc imm {
     //exe(mread(pc++));
-    mread();
+    imem_read();
     imm_wait();
   }
 
   proc imm_wait {
-    if(done_mread){
+    if(done_imem_read){
       exe(instruction);
     }
     pc++;
@@ -43,13 +45,13 @@ module tut {
     wire nextpc[8];
     any{
       op == ADD: {acc:=acc+im;}
-      op == LD:  {acc:=mread(im);}
-      op == ST: {mwrite(imm, acc);}
+      op == LD:  {acc:=dmem_read(im);}
+      op == ST: {dmem_write(imm, acc);}
     }
 
     any{
       op == JMP: {nextpc=im;}
-      (op == JZ) && (acc == 0) {nextpc=im;}
+      (op == JZ) && (acc == 0): {nextpc=im;}
       else: nextpc=pc;
     }
     ift(nextpc);
