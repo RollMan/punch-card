@@ -1,16 +1,17 @@
-#define POWER (800)
+#define POWER (600)
 #include "Card.nsh"
+#include "../NegEdge/NegEdge.nsh"
 
 module Card {
   reg ref_reg[11] = 0;
-  wire is_true;
-  func_self sign_pos_edge() : is_true;
   proc_name send_paper_proc();
+  NegEdge ne;
 
   ref = ref_reg;
 
   proc send_paper_proc {
-    if(sign_pos_edge() == 1){
+    ne.exec(sensors[8]);
+    if(ne.res){
       ref_reg := 0;
       on_instruction(sensors[7:0]);
       finish();
@@ -21,26 +22,5 @@ module Card {
 
   func send_paper {
     send_paper_proc();
-  }
-
-  func sign_pos_edge {
-    wire sign;
-    reg prev_sign = 1;
-    reg chattering[32] = 0;
-
-    sign = sensors[8];
-    prev_sign := sign;
-
-    if(prev_sign == 1 && sign == 0) {
-      if(sign == 1) return 0;
-      else chattering++;
-      if((sign == 0) && (chattering >= 5000000)){
-          chattering := 0;
-        return 1;
-      }
-    }else{
-      chattering := 0;
-      return 0;
-    }
   }
 }

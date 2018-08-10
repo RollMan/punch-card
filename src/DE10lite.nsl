@@ -6,49 +6,43 @@
 #include "NegEdge/NegEdge.nsh"
 
 module DE10lite {
-  // MD md;
-  // Card card;
-  NegEdge neg;
+  MD md;
+  Card card;
+  wire ARDUINO_IO[9];
   tut processor;
   HEX hex1, hex0;
+  HEX hex3, hex2;
   mem dmem[256][8];
-  proc_name imem_read();
+
+  ARDUINO_IO = {ARDUINO_IO_8,
+                 ARDUINO_IO_7,
+                 ARDUINO_IO_6,
+                 ARDUINO_IO_5,
+                 ARDUINO_IO_4,
+                 ARDUINO_IO_3,
+                 ARDUINO_IO_2,
+                 ARDUINO_IO_1,
+                 ARDUINO_IO_0};
 
 
-  //LEDR = {ARDUINO_IO_8,
-  //                ARDUINO_IO_7,
-  //                ARDUINO_IO_6,
-  //                ARDUINO_IO_5,
-  //                ARDUINO_IO_4,
-  //                ARDUINO_IO_3,
-  //                ARDUINO_IO_2,
-  //                ARDUINO_IO_1,
-  //                ARDUINO_IO_0};
 
 
   // motor driver
-  // md.ref = card.ref;
-  // GPIO0 = md.vref;
-  // GPIO1 = md.in1;
-  // GPIO2 = md.in2;
+  md.ref = card.ref;
+  GPIO0 = md.vref;
+  GPIO1 = md.in1;
+  GPIO2 = md.in2;
 
-  // card.sensors = {ARDUINO_IO_8,
-  //                ARDUINO_IO_7,
-  //                ARDUINO_IO_6,
-  //                ARDUINO_IO_5,
-  //                ARDUINO_IO_4,
-  //                ARDUINO_IO_3,
-  //                ARDUINO_IO_2,
-  //                ARDUINO_IO_1,
-  //                ARDUINO_IO_0};
+  card.sensors = ARDUINO_IO;
 
-  // .{HEX1, HEX0} = {hex1.trans(processor.accumulator[7:4]), hex0.trans(processor.accumulator[3:0])};
   HEX1 = hex1.trans(processor.accumulator[7:4]);
   HEX0 = hex0.trans(processor.accumulator[3:0]);
 
-  LEDR = 10'(processor.PC);
-
-
+  // Debug information
+  //LEDR = 10'(ARDUINO_IO);
+  LEDR = 10'hFFFFF;
+  HEX3 = hex3.trans(processor.PC[7:4]);
+  HEX2 = hex2.trans(processor.PC[3:0]);
 
   func processor.dmem_read {
     return dmem[processor.address];
@@ -59,20 +53,10 @@ module DE10lite {
   }
 
   func processor.imem_read {
-    // card.send_paper();
-    // while posedge of key
-    imem_read();
+    card.send_paper();
   }
 
-  proc imem_read {
-    neg.exec(KEY1);
-    if((neg.res)){
-        processor.done_imem_read(SW[7:0]);
-        finish();
-    }
+  func card.on_instruction {
+    processor.done_imem_read(card.instruction);
   }
-
-  // func card.on_instruction {
-  //   processor.done_imem_read(card.instruction);
-  // }
 }

@@ -9,7 +9,7 @@ module NegEdge {
   if(cnt == 0){
     prev := current;
     current := buffer;
-    if(prev == 0 && current == 1){
+    if(prev == 1 && current == 0){
       res();
     }
   }
