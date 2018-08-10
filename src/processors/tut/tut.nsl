@@ -3,14 +3,19 @@
 #define ADD 0
 #define LD 1
 #define ST 2
-#define JMP 3
-#define JZ 4
+// #define JMP 3
+// #define JZ 4
+#define XOR 3
+#define AND 4
+#define SUB 5
+#define MUL 6
 
 module tut {
   reg count[32] = 0, pc[8], op[3], im[5], acc[8]=0;
   proc_name ift(pc), ift_wait(), exe(im);
 
   accumulator = acc;
+  PC = pc;
 
   any{
     count < 10000000: count++;
@@ -21,13 +26,11 @@ module tut {
 
   proc ift{
     // imm(mread(pc++));
-    PC = 8'b0001;
     imem_read();
     ift_wait();
   }
 
   proc ift_wait{
-    PC = 8'b0010;
     if(done_imem_read){
       exe();
       op := instruction[7:5];
@@ -42,13 +45,19 @@ module tut {
       op == ADD: {acc:=acc+8'(im);}
       op == LD:  {acc:=dmem_read(8'(im));}
       op == ST: {dmem_write(8'(im), acc);}
+      op == SUB: {acc:=acc-8'(im);}
+      op == MUL: {acc:=acc*8'(im);}
+      op == AND: {acc:=acc&8'(im);}
+      op == XOR: {acc:=acc^8'(im);}
+      op == NOT: {acc:=~acc;}
     }
 
-    any{
-      op == JMP: {nextpc=8'(im);}
-      (op == JZ) && (acc == 0): {nextpc=8'(im);}
-      else: nextpc=pc;
-    }
+    // any{
+    //   op == JMP: {nextpc=8'(im);}
+    //   (op == JZ) && (acc == 0): {nextpc=8'(im);}
+    //   else: nextpc=pc;
+    // }
+    nextpc = pc;
     ift(nextpc);
   }
 }
