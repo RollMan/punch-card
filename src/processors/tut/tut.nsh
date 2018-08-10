@@ -6,4 +6,8 @@ declare tut {
   func_out dmem_read(address):instruction;
   func_in done_imem_read(instruction);
   func_out dmem_write(address, instruction);
+
+
+  // DEBUG
+  output PC[8];
 }

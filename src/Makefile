@@ -16,7 +16,7 @@ WORKDIR		= synth
 DESIGN		= DE10lite
 SIM_TARGET	= sim_DE10lite
 NSL2VL    	= nsl2vl
-NSLFLAGS  	= -O -neg_res -I$(SRCDIR) -I$(SRCDIR)/common -I$(SRCDIR)/MD -I$(SRCDIR)/processors/tut -I$(SRCDIR)/HEX -I$(SRCDIR)/Card
+NSLFLAGS  	= -O -neg_res -I$(SRCDIR) -I$(SRCDIR)/common -I$(SRCDIR)/MD -I$(SRCDIR)/processors/tut -I$(SRCDIR)/HEX -I$(SRCDIR)/Card -I$(SRCDIR)/NegEdge
 MKPROJ		= $(SRCDIR)/mkproj-$(DESIGN).tcl
 
 IVERILOG	= iverilog
@@ -28,7 +28,7 @@ Q2PGM		= $(Q2_PATH)/quartus_pgm
 CABLE		= "USB-Blaster [1-2]"
 PMODE		= JTAG
 
-SRCS		= $(DESIGN).nsl ./common/PWM.nsl ./MD/MD.nsl ./processors/tut/tut.nsl ./HEX/HEX.nsl Card/Card.nsl
+SRCS		= $(DESIGN).nsl ./common/PWM.nsl ./MD/MD.nsl ./processors/tut/tut.nsl ./HEX/HEX.nsl Card/Card.nsl ./NegEdge/NegEdge.nsl
 #SRCS		= $(DESIGN).nsl
 VFILES 		= $(SRCS:%.nsl=%.v)
 LIBS		=

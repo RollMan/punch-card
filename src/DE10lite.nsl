@@ -3,22 +3,16 @@
 #include "processors/tut/tut.nsh"
 #include "HEX/HEX.inc"
 #include "DE10lite.nsh"
+#include "NegEdge/NegEdge.nsh"
 
 module DE10lite {
   // MD md;
   // Card card;
+  NegEdge neg;
   tut processor;
   HEX hex1, hex0;
-  reg LEDR_r[10] = 0;
-  reg chattering[32] = 0;
-  reg sign_cnt[20] = 0;
   mem dmem[256][8];
   proc_name imem_read();
-    wire sign;
-    reg prev_sign = 1;
-
-  wire pos_edge;
-  func_self sign_pos_edge(): pos_edge;
 
 
   //LEDR = {ARDUINO_IO_8,
@@ -52,7 +46,7 @@ module DE10lite {
   HEX1 = hex1.trans(processor.accumulator[7:4]);
   HEX0 = hex0.trans(processor.accumulator[3:0]);
 
-  LEDR = LEDR_r;
+  LEDR = 10'(processor.PC);
 
 
 
@@ -71,28 +65,14 @@ module DE10lite {
   }
 
   proc imem_read {
-    sign_cnt++;
-    if(sign_cnt == 0){ 
-      sign = KEY1;
-      prev_sign := sign;
-      if(sign_pos_edge() == 1){
+    neg.exec(KEY1);
+    if((neg.res)){
         processor.done_imem_read(SW[7:0]);
         finish();
-      }
     }
   }
 
   // func card.on_instruction {
   //   processor.done_imem_read(card.instruction);
   // }
-
-
-  func sign_pos_edge {
-
-    if(prev_sign == 0 && sign == 1) {
-      return 1;
-    }else{
-      return 0;
-    }
-  }
 }

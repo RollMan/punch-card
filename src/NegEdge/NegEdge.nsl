@@ -1,0 +1,19 @@
+#include "NegEdge.nsh"
+
+module NegEdge {
+  reg current = 1;
+  reg prev = 1;
+  reg buffer = 0;
+  reg cnt[18] = 0;
+  cnt++;
+  if(cnt == 0){
+    prev := current;
+    current := buffer;
+    if(prev == 0 && current == 1){
+      res();
+    }
+  }
+  func exec {
+    buffer := in;
+  }
+}
