@@ -1,0 +1,39 @@
+#define POWER (512)
+#include "Card.nsh"
+
+module Card {
+  reg ref_reg[11] = 0;
+  wire is_true;
+  func_self sign_pos_edge() : is_true;
+  proc_name send_paper_proc();
+
+  ref = ref_reg;
+
+  proc send_paper_proc {
+    if(sign_pos_edge() == 1){
+      ref_reg := 0;
+      on_instruction(sensors[7:0]);
+      finish();
+    }else{
+      ref_reg := POWER;
+    }
+  }
+
+  func send_paper {
+    send_paper_proc();
+  }
+
+  func sign_pos_edge {
+    wire sign;
+    reg prev_sign = 1;
+
+    sign = sensors[8];
+    prev_sign := sign;
+
+    if(prev_sign == 1 && sign == 0) {
+      return 1;
+    }else{
+      return 0;
+    }
+  }
+}

@@ -1,0 +1,36 @@
+#include "Card.nsh"
+
+declare test_Card simulation {}
+
+module test_Card {
+  Card card;
+  reg sign = 1, instruction[8];
+  wire ref[11];
+  reg cnt[6] = 0;
+  func_self start();
+
+  card.sensors = {sign, instruction};
+
+  if(cnt < 10) cnt++;
+  if(cnt == 10) {cnt++; start();}
+
+  func start seq {
+    wire nop;
+    reg i[32];
+
+    card.send_paper();
+    for(i:=0; i < 5000; i++){
+      nop = i[0];
+    }
+    instruction := 8'h0f0f;
+    sign := 0;
+    for(i:=0; i < 20; i++){
+      nop = i[0];
+    }
+    _finish();
+  }
+
+  func card.on_instruction {
+    _display("inst: %x", card.instruction);
+  }
+}
