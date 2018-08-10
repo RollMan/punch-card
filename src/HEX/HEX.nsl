@@ -1,0 +1,24 @@
+#include "HEX.inc"
+
+module HEX {
+
+	func trans any{
+		digit_num==4'h0:	hexdata=8'b11000000;
+		digit_num==4'h1:	hexdata=8'b11111001;
+		digit_num==4'h2:	hexdata=8'b10100100;
+		digit_num==4'h3:	hexdata=8'b10110000;
+		digit_num==4'h4:	hexdata=8'b10011001;
+		digit_num==4'h5:	hexdata=8'b10010010;
+		digit_num==4'h6:	hexdata=8'b10000010;
+		digit_num==4'h7:	hexdata=8'b11011000;
+		digit_num==4'h8:	hexdata=8'b10000000;
+		digit_num==4'h9:	hexdata=8'b10010000;
+		digit_num==4'ha:	hexdata=8'b10001000;
+		digit_num==4'hb:	hexdata=8'b10000011;
+		digit_num==4'hc:	hexdata=8'b11000110;
+		digit_num==4'hd:	hexdata=8'b10100001;
+		digit_num==4'he:	hexdata=8'b10000110;
+		digit_num==4'hf:	hexdata=8'b10001110;
+	}
+}
+	

@@ -1,0 +1,50 @@
+#include "MD/MD.nsh"
+#include "Card/Card.nsh"
+#include "processors/tut/tut.nsh"
+#include "HEX/HEX.inc"
+
+declare DE10lite {
+
+  // photo-reflector input
+  input ARDUINO_IO_0, ARDUINO_IO_1, ARDUINO_IO_2, ARDUINO_IO_3, ARDUINO_IO_4, ARDUINO_IO_5, ARDUINO_IO_6, ARDUINO_IO_7, ARDUINO_IO_8;
+
+  // motor control
+  output GPIO0, GPIO1, GPIO2;
+
+  // accumulator output
+  output HEX0[8], HEX1[8], HEX2[8], HEX3[8];
+}
+
+module DE10lite {
+  MD md;
+  Card card;
+  tut processor;
+  HEX hex1, hex0;
+
+
+  // motor driver
+  md.ref = card.ref;
+  GPIO0 = md.vref;
+  GPIO1 = md.in1;
+  GPIO2 = md.in2;
+
+  card.sensors = {ARDUINO_IO_8,
+                  ARDUINO_IO_7,
+                  ARDUINO_IO_6,
+                  ARDUINO_IO_5,
+                  ARDUINO_IO_4,
+                  ARDUINO_IO_3,
+                  ARDUINO_IO_2,
+                  ARDUINO_IO_1,
+                  ARDUINO_IO_0};
+
+  .{HEX1, HEX0} = {hex1.trans(processor.accumulator[7:4]), hex0.trans(processor.accumulator[3:0])};
+
+  func processor.mread {
+    card.send_paper();
+  }
+
+  func card.on_instruction {
+    tut.done_mread(card.instruction);
+  }
+}

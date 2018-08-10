@@ -6,7 +6,7 @@
 
 module tut {
   reg count[8] = 0, pc[8], op[8], im[8], acc[8]=0;
-  proc_name ift(pc), imm(op), exe(im);
+  proc_name ift(pc), ift_wait(), imm(op), imm_wait(), exe(im);
 
   any{
     count <= 20: count++;
@@ -14,11 +14,29 @@ module tut {
   }
 
   proc ift{
-    imm(mread(pc++));
+    // imm(mread(pc++));
+    mread();
+    ift_wait();
+  }
+
+  proc ift_wait{
+    if(done_mread){
+      imm(instruction);
+      pc++;
+    }
   }
 
   proc imm {
-    exe(mread(pc++));
+    //exe(mread(pc++));
+    mread();
+    imm_wait();
+  }
+
+  proc imm_wait {
+    if(done_mread){
+      exe(instruction);
+    }
+    pc++;
   }
 
   proc exe{
