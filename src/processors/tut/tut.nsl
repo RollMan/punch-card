@@ -10,6 +10,8 @@ module tut {
   reg count[8] = 0, pc[8], op[8], im[8], acc[8]=0;
   proc_name ift(pc), ift_wait(), imm(op), imm_wait(), exe(im);
 
+  PC = pc;
+
   accumulator = acc;
 
   any{

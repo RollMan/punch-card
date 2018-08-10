@@ -5,43 +5,56 @@
 #include "DE10lite.nsh"
 
 module DE10lite {
-  MD md;
-  Card card;
+  // MD md;
+  // Card card;
   tut processor;
   HEX hex1, hex0;
+  reg LEDR_r[10] = 0;
+  reg chattering[32] = 0;
+  reg sign_cnt[20] = 0;
   mem dmem[256][8];
+  proc_name imem_read();
+    wire sign;
+    reg prev_sign = 1;
+
+  wire pos_edge;
+  func_self sign_pos_edge(): pos_edge;
 
 
-  LEDR = {ARDUINO_IO_8,
-                  ARDUINO_IO_7,
-                  ARDUINO_IO_6,
-                  ARDUINO_IO_5,
-                  ARDUINO_IO_4,
-                  ARDUINO_IO_3,
-                  ARDUINO_IO_2,
-                  ARDUINO_IO_1,
-                  ARDUINO_IO_0};
+  //LEDR = {ARDUINO_IO_8,
+  //                ARDUINO_IO_7,
+  //                ARDUINO_IO_6,
+  //                ARDUINO_IO_5,
+  //                ARDUINO_IO_4,
+  //                ARDUINO_IO_3,
+  //                ARDUINO_IO_2,
+  //                ARDUINO_IO_1,
+  //                ARDUINO_IO_0};
 
 
   // motor driver
-  md.ref = card.ref;
-  GPIO0 = md.vref;
-  GPIO1 = md.in1;
-  GPIO2 = md.in2;
+  // md.ref = card.ref;
+  // GPIO0 = md.vref;
+  // GPIO1 = md.in1;
+  // GPIO2 = md.in2;
 
-  card.sensors = {ARDUINO_IO_8,
-                  ARDUINO_IO_7,
-                  ARDUINO_IO_6,
-                  ARDUINO_IO_5,
-                  ARDUINO_IO_4,
-                  ARDUINO_IO_3,
-                  ARDUINO_IO_2,
-                  ARDUINO_IO_1,
-                  ARDUINO_IO_0};
+  // card.sensors = {ARDUINO_IO_8,
+  //                ARDUINO_IO_7,
+  //                ARDUINO_IO_6,
+  //                ARDUINO_IO_5,
+  //                ARDUINO_IO_4,
+  //                ARDUINO_IO_3,
+  //                ARDUINO_IO_2,
+  //                ARDUINO_IO_1,
+  //                ARDUINO_IO_0};
 
   // .{HEX1, HEX0} = {hex1.trans(processor.accumulator[7:4]), hex0.trans(processor.accumulator[3:0])};
   HEX1 = hex1.trans(processor.accumulator[7:4]);
   HEX0 = hex0.trans(processor.accumulator[3:0]);
+
+  LEDR = LEDR_r;
+
+
 
   func processor.dmem_read {
     return dmem[processor.address];
@@ -52,11 +65,34 @@ module DE10lite {
   }
 
   func processor.imem_read {
-    card.send_paper();
+    // card.send_paper();
+    // while posedge of key
+    imem_read();
   }
 
-  func card.on_instruction {
-    processor.done_imem_read(card.instruction);
+  proc imem_read {
+    sign_cnt++;
+    if(sign_cnt == 0){ 
+      sign = KEY1;
+      prev_sign := sign;
+      if(sign_pos_edge() == 1){
+        processor.done_imem_read(SW[7:0]);
+        finish();
+      }
+    }
   }
 
+  // func card.on_instruction {
+  //   processor.done_imem_read(card.instruction);
+  // }
+
+
+  func sign_pos_edge {
+
+    if(prev_sign == 0 && sign == 1) {
+      return 1;
+    }else{
+      return 0;
+    }
+  }
 }
