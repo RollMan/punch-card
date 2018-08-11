@@ -1,14 +1,14 @@
 #include "tut.nsh"
 
-#define ADD 0
-#define LD 1
-#define ST 2
+#define ADD (3'd0)
+#define LD (3'd1)
+#define ST (3'd2)
 // #define JMP 3
 // #define JZ 4
-#define XOR 3
-#define AND 4
-#define SUB 5
-#define MUL 6
+#define XOR (3'd3)
+#define AND (3'd4)
+#define SUB (3'd5)
+#define MUL (3'd6)
 
 module tut {
   reg count[32] = 0, pc[8], op[3], im[5], acc[8]=0;
@@ -49,7 +49,7 @@ module tut {
       op == MUL: {acc:=acc*8'(im);}
       op == AND: {acc:=acc&8'(im);}
       op == XOR: {acc:=acc^8'(im);}
-      op == NOT: {acc:=~acc;}
+      //op == NOT: {acc:=~acc;}
     }
 
     // any{
